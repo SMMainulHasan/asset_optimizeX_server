@@ -92,12 +92,7 @@ WSGI_APPLICATION = 'asset_optimze_x.wsgi.application'
 ############ MySQL Database Add ##############
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': 'asset',
-        # 'USER': 'root',
-        # 'PASSWORD':'password',
-        # 'HOST': '127.0.0.1',
-        # 'PORT': '3306', 
+
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
@@ -163,8 +158,8 @@ REST_FRAMEWORK = {
 
 ### JWT settings
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
    
 
     "AUTH_HEADER_TYPES": ("Bearer",),
@@ -186,8 +181,6 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
-
-
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",

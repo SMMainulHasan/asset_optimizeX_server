@@ -51,6 +51,7 @@ class User(AbstractBaseUser):
   updated_at = models.DateTimeField(auto_now=True)
   image = models.ImageField(upload_to = 'images/account/', null=False, blank = False, default='profile_pics/profile.jpg')
   bio = models.CharField(max_length=50,blank=False, null=False, default=False) 
+  
  
   country = models.CharField(max_length=100, default=False, null=False, blank=False)
   zip_code = models.CharField(max_length=100, default=False, null=False)

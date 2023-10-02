@@ -264,6 +264,184 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "profile-update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk2MTYxMjUxLCJpYXQiOjE2OTYxNjAwNTEsImp0aSI6ImNlZmQwZWE1YWZiMTRjMjk4MmQ1ZTU1NWM0YTk5MmEzIiwidXNlcl9pZCI6MTF9.SdgFEd3vg7zri3qaxG96oU_8iQHoz3b48hIG9iBUsZU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "alu",
+							"type": "text"
+						},
+						{
+							"key": "bio",
+							"value": "df",
+							"type": "text"
+						},
+						{
+							"key": "country",
+							"value": "ffd",
+							"type": "text"
+						},
+						{
+							"key": "zip_code",
+							"value": "fd",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/user/profile-update/11/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"user",
+						"profile-update",
+						"11",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "organization-register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk2MTY3NTkwLCJpYXQiOjE2OTYxNjYzOTAsImp0aSI6ImZhYWQzMjcxMTExNDRlOGZiZjkyNjRiMGRiY2M3ZDhkIiwidXNlcl9pZCI6MTF9.2FhVEtNZJYvdcqBHuDMnhDK5eprStkyR7580hZt5ErI",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "organization_name",
+							"value": "asseOptimzeX1",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "So lazy",
+							"type": "text"
+						},
+						{
+							"key": "country",
+							"value": "Bangladesh",
+							"type": "text"
+						},
+						{
+							"key": "zip_code",
+							"value": "1207",
+							"type": "text"
+						},
+						{
+							"key": "company_phone_number",
+							"value": "0171892020441",
+							"type": "text"
+						},
+						{
+							"key": "tc",
+							"value": "True",
+							"type": "text"
+						},
+						{
+							"key": "user",
+							"value": "1",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/organization/register/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"organization",
+						"register",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "organization-register-active",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk2MjI5MDAzLCJpYXQiOjE2OTYyMjc4MDMsImp0aSI6IjkxNzE0M2RjZDMwZjQ1OGI5NDEwZDNjN2U4YmUzZmIwIiwidXNlcl9pZCI6M30.x3d9Xetbmzi6V5HnJQQhlf5BfCjnbQmiGqYlP0UPmnU",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/organization/register/Mw/bvfzvs-43747f7916bdbccf93bbec72c7386817/assetOptimzeX2/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"organization",
+						"register",
+						"Mw",
+						"bvfzvs-43747f7916bdbccf93bbec72c7386817",
+						"assetOptimzeX2",
+						""
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

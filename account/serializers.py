@@ -58,7 +58,25 @@ class UserLoginSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ['id', 'email', 'name', 'phone_number']
+    fields = '__all__'
+  
+################# User Profile Update Serilizer ##########
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields = ['name', 'bio', 'country', 'zip_code']  
+  def update(self, instance, validated_data):
+        user = self.context['request'].user
+        if user.pk != instance.pk:
+            raise serializers.ValidationError({"authorize": "You dont have permission for this user."})
+        instance.name = validated_data['name']
+        instance.bio = validated_data['bio']
+        instance.country = validated_data['country']
+        instance.zip_code = validated_data['zip_code']
+
+        instance.save()
+        return instance
+    
   
 ####### user Change password Serializer #####
 class UserChangePasswordSerializer(serializers.Serializer):
@@ -140,7 +158,9 @@ class  UserPasswordResetSerializer(serializers.Serializer):
       PasswordResetTokenGenerator().check_token(user, token)
       raise ValidationError("Token is not Valid or Expired")
     
-    
+
+  
+   
 
   
   

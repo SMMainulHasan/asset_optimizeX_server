@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.views import APIView
 from account.serializers import *
 from django.contrib.auth import authenticate
@@ -24,7 +24,6 @@ def get_tokens_for_user(user):
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
-
 
 class UserRegistrationView(APIView):
   renderer_classes = [UserRenderer]
@@ -93,8 +92,7 @@ class UserLoginView(APIView):
       return Response({'token': token, 'msg':"Login Success"}, status=status.HTTP_200_OK)
     else:
       return Response({'errors':{'non_field_errors': ['Email or Password is not Valid']}}, status=status.HTTP_404_NOT_FOUND)
-        
-        
+             
 ########### User Profile ################
 class UserProfileView(APIView):
   renderer_classes = [UserRenderer]
@@ -103,8 +101,13 @@ class UserProfileView(APIView):
   def get(self, request, format = None):
     serializer = UserProfileSerializer(request.user)
     return Response(serializer.data, status = status.HTTP_200_OK)
-  
 
+########## User Update Profile ##########
+class UserUpdateProfileView(generics.UpdateAPIView):
+  queryset = User.objects.all()
+  permission_classes = [IsAuthenticated]
+  serializer_class = UserProfileUpdateSerializer
+  
 ########## USer Change PAssword ######
 class UserChangePasswordView(APIView):
   renderer_classes = [UserRenderer]
@@ -113,7 +116,6 @@ class UserChangePasswordView(APIView):
     serializer = UserChangePasswordSerializer(data= request.data, context = {'user': request.user})
     serializer.is_valid(raise_exception=True)
     return Response({'msg': 'password change successfully'})
- 
     
 ############ send email Password Reset
 class SendPasswordResetEmailView(APIView):
@@ -123,7 +125,6 @@ class SendPasswordResetEmailView(APIView):
     serializer.is_valid(raise_exception= True)
     return Response({'msg':'Password Reset Link send. Please Check Your Email'}, status = status.HTTP_200_OK)
     
-
 ######### UserPasswordResetView###
 class UserPasswordResetView(APIView):
   renderer_classes = [UserRenderer]
@@ -132,3 +133,6 @@ class UserPasswordResetView(APIView):
     serializer.is_valid(raise_exception= True)
     return Response({'msg': 'password change successfully'}, status=status.HTTP_200_OK)
     # return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+
+
+
