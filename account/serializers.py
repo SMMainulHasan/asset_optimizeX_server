@@ -9,11 +9,10 @@ from account.utils import *
 ######### User Resistration Serializers ####################
 class UserRegistrationSerializer(serializers.ModelSerializer):
   password2 = serializers.CharField(style={'input_type':'password'}, write_only = True)
-  phone_number = serializers.ReadOnlyField()
-  tc = serializers.ReadOnlyField()
+  
   class Meta:
     model = User
-    fields = ['email', 'name', 'phone_number', 'password', 'password2', 'tc']
+    fields = ['email', 'name', 'phone_number', 'password', 'password2']
     extra_kwargs = {
       'password':{'write_only':True},
       
@@ -23,9 +22,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
   def validate(self, attrs):
     password = attrs.get('password')
     password2 = attrs.get('password2') 
+   
+    if len(password) < 8 or len(password2) < 8:
+      raise serializers.ValidationError('Your password must contain at least 8 characters.')
     if password != password2:
       raise serializers.ValidationError("Password and Confirm Password doesn't match")  
     return attrs      
+    
  
   def create(self, validate_data):   
     return User.objects.create_user(**validate_data)
@@ -68,6 +71,9 @@ class UserChangePasswordSerializer(serializers.Serializer):
     password = attrs.get('password')
     password2 = attrs.get('password2')
     user = self.context.get('user')
+    
+    if len(password) < 8 or len(password2) < 8:
+      raise serializers.ValidationError('Your password must contain at least 8 characters.')
     if password != password2:
       raise serializers.ValidationError("Password and Confirm Password doesn't match")
     user.set_password(password)
@@ -119,6 +125,8 @@ class  UserPasswordResetSerializer(serializers.Serializer):
       uid = self.context.get('uid')
       token = self.context.get('token')  
       
+      if len(password) < 8 or len(password2) < 8:
+        raise serializers.ValidationError('Your password must contain at least 8 characters.')
       if password != password2:
         raise serializers.ValidationError("Password and confirm password doesn't match")
       id =smart_str(urlsafe_base64_decode(uid))
