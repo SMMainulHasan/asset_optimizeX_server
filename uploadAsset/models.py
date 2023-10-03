@@ -1,7 +1,6 @@
 from django.db import models
 
 from category.models import Category
-from library.models import Library
 from organization.models import Organization
 
 
@@ -14,15 +13,16 @@ class Tag(models.Model):
 
 
 class uploadAsset(models.Model):
-  library = models.ForeignKey(Library, on_delete=models.CASCADE)
+  user = models.ForeignKey(Organization, on_delete=models.CASCADE)
   title = models.CharField(max_length=100)
   description = models.TextField(max_length=500)
-  file_type = models.FileField(upload_to='images/company/asset/')# <<--------
-  created_at = models.DateTimeField(auto_now_add= True)
-  updated_at = models.DateTimeField(auto_now_add= True)
-  tags = models.ManyToManyField(Tag, blank=True) #Need to work
+  file_type = models.FileField(upload_to='images/company/asset/')
+  upload_date = models.DateTimeField(auto_now_add= True)
+  tags = models.ManyToManyField(Tag, blank=True)
   location = models.CharField(max_length=200)
   comment = models.CharField(max_length=300)
+  expiry_date = models.DateTimeField(auto_now_add=True) # Research how to fixed date delete asset
+  category = models.ForeignKey(Category, on_delete=models.CASCADE)
   
   def __str__(self):
       return self.title
