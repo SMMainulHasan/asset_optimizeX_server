@@ -26,6 +26,7 @@ urlpatterns = [
      path('api/add-user/', include('add_user.urls')),
      path('api/asset/', include('uploadAsset.urls')),
      path('api/category/', include('category.urls')),
+     path('api/library/', include('library.urls')),
 ]
 if settings.DEBUG:
         urlpatterns += static(settings.MEDIA_URL,

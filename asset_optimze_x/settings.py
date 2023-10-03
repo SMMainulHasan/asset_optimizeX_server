@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'add_user',
     'uploadAsset',
     'category',
+    'library',
        
 ]
 
