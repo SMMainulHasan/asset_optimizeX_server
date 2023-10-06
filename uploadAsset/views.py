@@ -1,4 +1,4 @@
-from rest_framework import generics,status
+from rest_framework import generics, status, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import uploadAsset,AssetVersion
@@ -8,11 +8,15 @@ class AssetListsCreateView(generics.ListCreateAPIView):
     queryset = uploadAsset.objects.all()
     serializer_class = uploadAssetSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'description']
     
 #for retrive data librarywise
 class AssetListCreateView(generics.ListCreateAPIView):
     serializer_class = uploadAssetSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'description']
 
     def get_queryset(self):
         # Get the library_id from the URL parameter
@@ -30,16 +34,22 @@ class AssetRetrieveView(generics.RetrieveAPIView):
     queryset = uploadAsset.objects.all()
     serializer_class = uploadAssetSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'description']
 
 class AssetUpdateView(generics.UpdateAPIView):
     queryset = uploadAsset.objects.all()
     serializer_class = uploadAssetSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'description']
 
 class AssetDeleteView(generics.DestroyAPIView):
     queryset = uploadAsset.objects.all()
     serializer_class = uploadAssetSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'description']
 
 
 #asset version control views.....
