@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt', ####### JWT token add
     'account',
     'organization',
-    'add_user',
+
     'uploadAsset',
     'category',
     'library',
