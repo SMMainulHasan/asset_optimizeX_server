@@ -1,5 +1,5 @@
 from django.contrib import admin
-from uploadAsset.models import uploadAsset,AssetVersion,Tag
+from uploadAsset.models import uploadAsset,AssetVersion,Tag, AssetFile
 # Register your models here.
 
 class AssetVersionAdmin(admin.ModelAdmin):
@@ -11,7 +11,9 @@ class AssetVersionAdmin(admin.ModelAdmin):
 
 class uploadAssetAdmin(admin.ModelAdmin):
   list_display = ['title']
-    
+class tagAdmin(admin.ModelAdmin):
+  list_display = ('id', 'tag_name')
 admin.site.register(uploadAsset, uploadAssetAdmin)
 admin.site.register(AssetVersion, AssetVersionAdmin)
-admin.site.register(Tag)
+admin.site.register(Tag, tagAdmin)
+admin.site.register(AssetFile)
