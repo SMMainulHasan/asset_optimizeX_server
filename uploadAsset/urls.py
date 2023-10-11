@@ -19,7 +19,7 @@ urlpatterns = [
     path('assets/<int:pk>/delete/', views.AssetDeleteView.as_view(), name='asset-delete'),
     
     #AssetVersion
-     path('asset-versions/', views.AssetVersionListView.as_view(), name='asset-versions-list'),
-     path('assets/prev/<int:asset_id>/', views.PreviousAssetVersionsView.as_view(), name='previous-asset-versions'),
-     path('assets/current/<int:pk>/', views.CurrentAssetView.as_view(), name='current-asset'),
+    path('asset-versions/', views.AssetVersionListView.as_view(), name='asset-versions-list'),
+    path('assets/prev/<int:asset_id>/', views.PreviousAssetVersionsView.as_view(), name='previous-asset-versions'),
+    path('assets/current/<int:pk>/', views.CurrentAssetView.as_view(), name='current-asset'),
 ]
