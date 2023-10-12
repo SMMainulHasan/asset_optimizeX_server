@@ -7,7 +7,7 @@ class OrganizationAdmin(admin.ModelAdmin):
   list_display = ['organization_name', 'created_date', 'id']
  
 class Member(admin.ModelAdmin):
-  list_display = ['user']
+  list_display = ['email']
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(addMember, Member)
 

@@ -581,6 +581,219 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "upload-asset",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk5NjEwODM3LCJpYXQiOjE2OTcwMTg4MzcsImp0aSI6Ijg3OTY4MDNkM2JkNTQwMjk4ZTNmMjVkZjAwMGY0MzkxIiwidXNlcl9pZCI6MTN9.hRC2z22Gru0UGCyYpx0RpgiIuKeonK-dc69ClnnmTd8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "temp",
+							"type": "text"
+						},
+						{
+							"key": "library",
+							"value": "14",
+							"type": "text"
+						},
+						{
+							"key": "upload_asset",
+							"type": "file",
+							"src": [
+								"/C:/Users/USER/Pictures/25  hadis.png",
+								"/C:/Users/USER/Pictures/25 hadi.png",
+								"/C:/Users/USER/Pictures/000123 - Copy.png",
+								"/C:/Users/USER/Pictures/000123.png",
+								"/C:/Users/USER/Pictures/000123_edited11 - Copy.jpg"
+							]
+						},
+						{
+							"key": "location",
+							"value": "Dhaka",
+							"type": "text"
+						},
+						{
+							"key": "user",
+							"value": "12",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/assets/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"assets",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "organization-all-asset-show",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk5NTg3MDU3LCJpYXQiOjE2OTY5OTUwNTcsImp0aSI6IjlkZmVjNzBiNWZiZTQ0ODViZDYwNWYyYjE1MGM1ZDJjIiwidXNlcl9pZCI6OH0.epHK1s_SW_Xmm7VNMOAVaDEPPNxN_xG-aWZ3RM9kviU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/library/asset/4/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"library",
+						"asset",
+						"4",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Library-create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk5NjIwMDU2LCJpYXQiOjE2OTcwMjgwNTYsImp0aSI6ImVmYTBkODcxNjBmNzRkNmE5YWU5ODAwOTYyMmYzZGE1IiwidXNlcl9pZCI6MTJ9.Brbxu_Ajv7GRdJk9wjOodRMSpKfs8lNQJrdHzkLyrEY",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "library_name",
+							"value": "Ami Bat Khai",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "kno kicu vlo lage na",
+							"type": "text"
+						},
+						{
+							"key": "organization",
+							"value": "9",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/library/create/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"library",
+						"create",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "library-asset-show",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk5Njg2MDMwLCJpYXQiOjE2OTcwOTQwMzAsImp0aSI6ImU0ZTIxYmNiNGY1ODQwM2FiYjEwYjcxOGY1MzRmZTNjIiwidXNlcl9pZCI6MTJ9.OzsQga0aBT6m8B3iuzYf5R-2H9D0RBaS_QNN_UBrMjA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/libraries/7/assets/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"libraries",
+						"7",
+						"assets",
+						""
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

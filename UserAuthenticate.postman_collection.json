@@ -326,17 +326,6 @@
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "New request",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": ""
-				}
-			},
-			"response": []
 		}
 	]
 }
