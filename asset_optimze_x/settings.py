@@ -37,12 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #### package #####
     'corsheaders',    ######## corsheader
     'rest_framework',
-    'rest_framework_simplejwt', ####### JWT token add
+    'rest_framework_simplejwt',####### JWT token add
+    'django_filters',
+    
+    #### App ####
     'account',
     'organization',
-
     'uploadAsset',
     'category',
     'library',
@@ -91,12 +94,23 @@ WSGI_APPLICATION = 'asset_optimze_x.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 ############ MySQL Database Add ##############
-DATABASES = {
-    'default': {
+# DATABASES = {
+#     'default': {
 
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+DATABASES = {
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql',
+       'NAME': 'assetoptimzex',
+       'USER': 'abdul',
+       'PASSWORD': '12345678',
+       'HOST': '127.0.0.1',
+       'PORT': '5432',
+   }
 }
 
 
@@ -153,7 +167,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
     # , ####Web browser a JSON format data show korbe
     # 'DEFAULT_RENDERER_CLASSES':('rest_framework.renderers.JSONRenderer',)
 }

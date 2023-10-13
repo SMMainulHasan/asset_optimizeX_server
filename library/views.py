@@ -2,6 +2,7 @@ from rest_framework.generics import (CreateAPIView, ListAPIView,
                                      RetrieveUpdateDestroyAPIView)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import response, views, status
+from account.models import User
 
 from account.renders import UserRenderer
 from .models import Library
@@ -74,13 +75,60 @@ from organization.models import Organization
 class assetAllImageView(views.APIView):
     permission_classes = [IsAuthenticated]
     renderer_classes = [UserRenderer]
-    def get(self, request, org_id):
-        lib = Library.objects.filter(organization__id = org_id)    
-        photo = []
+    def get(self, request, org_id): 
+        org_owner = Organization.objects.filter(owner=request.user)
+        org_member = Organization.objects.filter(member=request.user)
+        temp = [] 
+       
+        if org_owner.exists():
+            print(org_owner)
+            for i in org_owner:
+                if i.id == org_id:
+                    lib = Library.objects.filter(organization__id = org_id)      
+                    for k in lib:
+                        asset = uploadAsset.objects.filter(library = k.id)          
+                        for j in asset:
+                            tem = {}
+                            tem['id'] = j.id
+                            tem['title'] = j.title
+                            tem['asset'] = j.asset.url
+                            temp.append(tem)
+        
+        if  org_member.exists():   
+       
+            for i in org_member:
+                if i.id == org_id:
+                    lib = Library.objects.filter(organization__id = org_id)    
+                    for k in lib:
+                        asset = uploadAsset.objects.filter(library = k.id)          
+                        for j in asset:
+                            tem = {}
+                            tem['id'] = j.id
+                            tem['title'] = j.title
+                            tem['asset'] = j.asset.url
+                            temp.append(tem)
+        
+        photo = {}  
+        photo['total_img'] = len(temp)
+        temp.append(photo)
+        print(temp)           
+        return response.Response(temp, status=status.HTTP_200_OK)
+        
+        # lib = Library.objects.filter(organization__id = org_id)    
+        # photo = []   
+        # for i in lib:
+        #     asset = uploadAsset.objects.filter(library = i.id)          
+        #     for j in asset:
+        #         tem = {}
+        #         tem['id'] = j.id
+        #         tem['title'] = j.title
+        #         tem['asset'] = j.asset.url
+        #         photo.append(tem)
+        # tem = {}
+        # tem['total_img'] = len(photo)
+        # photo.insert(0, tem)
+        # print(photo)                                               
+        # return response.Response(photo, status=status.HTTP_200_OK)
 
-        for i in lib:
-            asset = uploadAsset.objects.filter(library = i.id)
-            for j in asset:
-                photo.append(j.asset.url)          
-        return response.Response(photo, status=status.HTTP_200_OK)
-    
+        
+        # return response.Response({"message": "You are not access this organization"}, status=status.HTTP_400_BAD_REQUEST)

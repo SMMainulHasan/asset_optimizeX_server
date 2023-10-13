@@ -63,18 +63,20 @@ class OrganizationTotal(views.APIView):
             owner_organization = Organization.objects.filter(owner=request.user)
             owner_organization_data = []
             for i in owner_organization:
-              dic = {}
-              dic['id'] = i.id
-              dic['organization_name'] = i.organization_name
-              owner_organization_data.append(dic)
+              if i.is_company == True:
+                dic = {}
+                dic['id'] = i.id
+                dic['organization_name'] = i.organization_name
+                owner_organization_data.append(dic)
                  
             member_organizations = Organization.objects.filter(member=request.user)
             member_organization_data = []
             for i in member_organizations:
-              dic = {}
-              dic['id'] = i.id
-              dic['organization_name'] = i.organization_name
-              member_organization_data.append(dic)
+              if i.is_company == True:
+                dic = {}
+                dic['id'] = i.id
+                dic['organization_name'] = i.organization_name
+                member_organization_data.append(dic)
             
             return response.Response({
                 'owner_organizations': owner_organization_data,

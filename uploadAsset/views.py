@@ -1,10 +1,13 @@
-from rest_framework import generics,status, viewsets, views
+from rest_framework import generics,status, viewsets, views, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import uploadAsset,AssetVersion
 from .serializers import uploadAssetSerializer,PreviousVersionSerializer,CurrentAssetSerializer,AssetVersionSerializer
 from account.renders import UserRenderer
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.db.models import Q
+from organization.models import Organization
+from library.models import Library
 
 class AssetListsCreateView(views.APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -45,17 +48,44 @@ class AssetListsCreateView(views.APIView):
 class AssetListCreateView(generics.ListCreateAPIView):
     serializer_class = uploadAssetSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'description', 'tags__tag_name']  # Include tags in search_fields
 
     def get_queryset(self):
         # Get the library_id from the URL parameter
         library_id = self.kwargs.get('library_id')
-
+        search_query = self.request.query_params.get('search', '')
+        
         if library_id is None:
             # Return a response with an error message if library_id is missing
             return Response({'error': 'Library ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
         
-        queryset = uploadAsset.objects.filter(library_id=library_id)
-        return queryset
+        if search_query:
+            # Use Q objects to perform case-insensitive search on multiple fields
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(tags__tag_name__icontains=search_query)
+            )
+        
+        user = self.request.user
+        org = Library.objects.filter(organization__owner = user)
+        
+        for i in org:
+            if i.id == library_id:     
+                queryset = uploadAsset.objects.filter(library_id=library_id)
+                return queryset
+        org_m = Library.objects.filter(organization__member = user)
+        for i in org_m:
+            if i.id == library_id:
+                queryset = uploadAsset.objects.filter(library_id=library_id)
+                print(queryset)
+                return queryset
+        # return Response({'message':"This library not valid this user"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        
+        
     
 
 class AssetRetrieveView(generics.RetrieveAPIView):
@@ -74,7 +104,6 @@ class AssetDeleteView(generics.DestroyAPIView):
     queryset = uploadAsset.objects.all()
     serializer_class = uploadAssetSerializer
     permission_classes = [IsAuthenticated]
-
 
 #asset version control views.....
 
