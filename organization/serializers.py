@@ -7,10 +7,13 @@ from django.contrib.auth.tokens import default_token_generator
 
 
 ########### addMember Serializer ######
-class addMemberSerializer(serializers.ModelSerializer):
+class addMemberSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    role = serializers.CharField(max_length=100)
+    organization = serializers.CharField(max_length=100)
     class Meta:
-        model = addMember
-        fields = '__all__'
+        # model = addMember
+        fields = ['email', 'role', 'organization']
 
 ############ Organization Register Serializer ##################
 class organigationRegisterSerializer(serializers.ModelSerializer):
@@ -46,14 +49,14 @@ class memberInvitedAcceptSerializer(serializers.Serializer):
   def validate(self, attrs):
     uid = self.context.get('uid')
     token = self.context.get('token')
-    org_idd = self.context.get('org_id')
+    org_name = self.context.get('org_name')
    
     id = smart_str(urlsafe_base64_decode(uid))
-    org_id = smart_str(urlsafe_base64_decode(org_idd))
+    org_name = smart_str(urlsafe_base64_decode(org_name))
     user = User.objects.get(id = id)
-    org = Organization.objects.get(id= org_id)  
+    org = Organization.objects.get(organization_name = org_name)  
     token = default_token_generator.check_token(user, token)
-    add = addMember.objects.get(organization =org)
+    add = addMember.objects.get(user=user)
     
     if user is not None:
       add.is_company = True

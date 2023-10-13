@@ -33,8 +33,8 @@ class addMember(models.Model):
   ('Contributor', 'Contributor'),
   ('Consumer', 'Consumer'),
 )
-  user = models.ForeignKey(User, on_delete=models.CASCADE)
-  organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+  user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+  organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)
   email = models.CharField(max_length=200)
   role = models.CharField(max_length=100, choices=PERMISSION)
   is_company = models.BooleanField(default=False)
