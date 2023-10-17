@@ -58,33 +58,35 @@ class OrganizationTotal(views.APIView):
     renderer_classes = [UserRenderer]
     permission_classes = [permissions.IsAuthenticated]
     
-    def get(self, request):
-        try:
-            owner_organization = Organization.objects.filter(owner=request.user)
-            owner_organization_data = []
-            for i in owner_organization:
-              if i.is_company == True:
-                dic = {}
-                dic['id'] = i.id
-                dic['organization_name'] = i.organization_name
-                owner_organization_data.append(dic)
-                 
-            member_organizations = Organization.objects.filter(member=request.user)
-            member_organization_data = []
-            for i in member_organizations:
-              if i.is_company == True:
-                dic = {}
-                dic['id'] = i.id
-                dic['organization_name'] = i.organization_name
-                member_organization_data.append(dic)
-            
-            return response.Response({
-                'owner_organizations': owner_organization_data,
-                'member_organizations': member_organization_data},status=status.HTTP_200_OK
-            )
+    def get(self, request):   
+      owner_organization = Organization.objects.filter(owner=request.user)
+      owner_organization_data = []
+      for i in owner_organization:
+        if i.is_company == True:
+          dic = {}
+          dic['id'] = i.id
+          dic['organization_name'] = i.organization_name
+          owner_organization_data.append(dic)
+          
+      member_organization_data = []     
+      member_organizations = addMember.objects.filter(user =request.user)
+      print(member_organizations)
+      for i in member_organizations:
+        org = Organization.objects.filter(id = i.organization_id)
+        dic = {}
+        if i.is_company == True:
+          dic['role'] = i.role
+          for j in org:
+            dic['id'] = j.id
+            dic['organization_name'] = j.organization_name
+          member_organization_data.append(dic)
+      
+    
+      return response.Response({
+          'owner_organizations': owner_organization_data,
+          'member_organizations': member_organization_data,
+          })  
 
-        except Organization.DoesNotExist:
-            return response.Response({'message': 'No organizations found'}, status=status.HTTP_404_NOT_FOUND)
           
 ########### Organization Member Request View #######
 class addMemberView(views.APIView):
@@ -97,15 +99,22 @@ class addMemberView(views.APIView):
     role = serializer.data.get('role')
     organization_name = serializer.data.get('organization')
     
+    
+    org_m = addMember.objects.filter(organization__organization_name = organization_name)
+    for i in org_m:
+      if i.user == request.user:
+        if i.role == 'Contributor' or i.role == 'Consumer':
+          print(i.role)
+          return response.Response({"msg": "Your are not access this organization add user option"})
     try:
       user = User.objects.get(email=email)
       if request.user == user:
         return response.Response("Not Valid Email")
       try:
         organization = Organization.objects.get(organization_name=organization_name)
-        if organization.owner != request.user:
+        if organization.owner == user:
           return response.Response({
-            "msg":"Your are not access this organization add user option"
+            "msg":"This user Organization Owner you are not invited request"
           })
         th = organization.member.all()
         for i in th:
@@ -134,56 +143,9 @@ class addMemberView(views.APIView):
     except User.DoesNotExist:
       return response.Response({"msg":"user not register"})
 
-# class addMemberView(viewsets.ModelViewSet):
-#     permission_classes = [permissions.IsAuthenticated]
-#     renderer_classes = [UserRenderer]
-#     queryset = addMember.objects.all()
-#     serializer_class = addMemberSerializer
-    
-#     def create(self, request, *args, **kwargs):
-#       serializer = self.get_serializer(data=request.data)
-#       serializer.is_valid(raise_exception=True)
-       
-#       # user = request.data.get('user')
-#       role = request.data.get('role')
-#       organization = request.data.get('organization')
-#       email = request.data.get('email')
-#       s = User.objects.get(email=email) 
-#       iii = Organization.objects.filter(member=s)
-#       print(iii)
-#       try:
-#         us = User.objects.get(email=email)        
-#         if us == request.user:
-#           return response.Response("Email not Valid")
-#         else:
-#           try:
-#             already_added = Organization.objects.get(member=us)
-#             print(already_added)
-#             return response.Response("Alread added This User")
-#           except Organization.DoesNotExist: 
-#             serializer.save()
-#             uid = urlsafe_base64_encode(force_bytes(us.id))
-#             token =default_token_generator.make_token(us)
-#             org_id = urlsafe_base64_encode(force_bytes(organization))
-#             print(uid)
-#             link = "http://localhost:5173/api/organization/add-user/"
-#             print("uid", uid, " Token", token, " link", link)
-#             body = 'Click Following link to confirm invited accepted ' + link +  uid + '/'+ token + '/' + org_id
-#             data = {
-#               'subject':'Invited Request',
-#               'body':body,
-#               'to_email':us.email,
-#             }
-#             Util.send_email(data)
-            
-#             return response.Response({'message':"Invited Link send. Check Email"})
-            
-#       except User.DoesNotExist:
-#         return response.Response({'message': "Not Register User"})
-        
+
          
 #  ############## Active Organization ##################
-
 class invitedActive(views.APIView):
   renderer_classes = [UserRenderer]
   def post(self, request, uid, token,org_name, format = None):

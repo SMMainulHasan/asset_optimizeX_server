@@ -1,12 +1,26 @@
 from rest_framework import serializers
 from .models import uploadAsset,AssetVersion
+from django.core.files import File
+import base64
+
+class updateUploadSerializer(serializers.ModelSerializer):
+    base64_image = serializers.SerializerMethodField()
+    class Meta:
+        model = uploadAsset
+        fields = ['id', 'organization', 'title', 'library', 'description', 'base64_image', 'location']
+        
+    def get_base64_image(self, obj):
+        f = open(obj.image_file.path, 'rb')
+        image = file(f)
+        data = base64.b64encode(image.read())
+        f.close()
+        return data
         
 class uploadAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = uploadAsset
         fields = ['id', 'organization', 'title', 'library', 'description', 'asset', 'location']
-        
-            
+          
 
 class PreviousVersionSerializer(serializers.ModelSerializer):
     class Meta:

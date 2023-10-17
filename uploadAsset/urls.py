@@ -1,16 +1,7 @@
 from django.urls import path, include
 from . import views
-# from rest_framework.routers import DefaultRouter
-
-
-# router = DefaultRouter()
-
-# router.register("asset", views.ProductsViewSet)
-
 
 urlpatterns = [
-    # path("", include(router.urls)),
-    
     #libraywise data retrieve
     path('libraries/<int:library_id>/assets/', views.AssetListCreateView.as_view(), name='library-assets'),
 

@@ -11,6 +11,8 @@ urlpatterns = [
      path('api/', include('uploadAsset.urls')),
      path('api/category/', include('category.urls')),
      path('api/library/', include('library.urls')),
+     
+     path('api/share/', include('share_assets.urls')),
 ]
 if settings.DEBUG:
         urlpatterns += static(settings.MEDIA_URL,
