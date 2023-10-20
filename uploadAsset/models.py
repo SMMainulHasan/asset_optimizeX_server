@@ -12,24 +12,6 @@ class Tag(models.Model):
         return self.tag_name
 
 
-# class uploadAsset(models.Model):
-#   user = models.ForeignKey(User, on_delete=models.CASCADE,default=1)
-#   library = models.ForeignKey(Library, on_delete=models.CASCADE)
-#   title = models.CharField(max_length=100)
-#   description = models.TextField(max_length=500,blank=True)
-#   asset = models.FileField(upload_to='images/company/asset/',default=None)
-#   tags = models.ManyToManyField(Tag, blank=True)
-#   location = models.CharField(max_length=200)
-#   comment = models.CharField(max_length=300,blank=True)
-#   crerated_at = models.DateTimeField(auto_now_add=True) 
-#   updated_at = models.DateTimeField(auto_now=True) 
-  
-#   def __str__(self):
-#       return self.title
-  
-  
-  
-
 class AssetVersion(models.Model):
     title = models.CharField(max_length=100)
     asset = models.FileField(upload_to='images/company/asset_versions/')
@@ -38,7 +20,7 @@ class AssetVersion(models.Model):
     def __str__(self):
         return self.title
 class uploadAsset(models.Model):
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE,null=True)
     library = models.ForeignKey(Library, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     asset = models.FileField(upload_to='images/company/asset/', null=True)

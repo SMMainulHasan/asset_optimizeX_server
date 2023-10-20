@@ -56,12 +56,20 @@ class memberInvitedAcceptSerializer(serializers.Serializer):
     user = User.objects.get(id = id)
     org = Organization.objects.get(organization_name = org_name)  
     token = default_token_generator.check_token(user, token)
-    add = addMember.objects.get(user=user)
+    add = addMember.objects.filter(organization=org)
     
     if user is not None:
-      add.is_company = True
-      user.save()
-      add.save()
-      return attrs
+      for i in add:
+        print(i.email)
+        if i.user == user:
+          i.is_company = True
+          user.save()
+          i.save()
+          return attrs
     else:
       raise ValidationError('Token is not Valid or Expired')
+
+class OrderSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Order
+    fields = ['']
