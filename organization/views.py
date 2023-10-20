@@ -9,6 +9,24 @@ from account.utils import Util
 from organization.models import *
 from rest_framework import status, generics, views, viewsets, permissions, response
 
+from organization.ssl import sslcommerz_payment_gateway
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+######### payment Gateway method ###########
+# class successView(views.APIView):
+#   permission_classes = [permissions.IsAuthenticated]
+#   def post(self, request):
+#     user_id = request.user
+
+# class PlacePremiumView(views.APIView):
+#   permission_classes = [permissions.IsAuthenticated]
+  
+#   def post(self, request):
+    # serializer = kkk
+    
+
+
 
 ############## Register Organization #################
 class OrganizationRegisterView(viewsets.ModelViewSet):
