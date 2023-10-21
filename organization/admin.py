@@ -10,4 +10,9 @@ class Member(admin.ModelAdmin):
   list_display = ['email', 'id']
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(addMember, Member)
+admin.site.register(Payment)
+admin.site.register(Order)
+admin.site.register(premiumOrder)
+admin.site.register(PaymentGateWaySettings)
+
 

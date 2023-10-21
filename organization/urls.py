@@ -17,4 +17,9 @@ urlpatterns = [
   path('member/<int:org_id>/', OrganizationMember.as_view()),
   
   path('member-remove/<int:pk>/', MemberRemoveView.as_view()),
+
+  ########### Payment  #########
+  path('payment/<int:pk>/', PlaceOrderPremiumView.as_view()),
+  path('success/', successView.as_view()),
+  
 ]

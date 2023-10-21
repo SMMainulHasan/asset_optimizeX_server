@@ -2,13 +2,6 @@ from django.db import models
 from account.models import User
 from django.utils.text import slugify
 
-class Payment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    payment_id = models.CharField(max_length= 100)
-    payment_method = models.CharField(max_length=100)
-    amount_paid = models.IntegerField()
-    status = models.CharField(max_length = 100)
-    created_at = models.DateTimeField(auto_now_add=True)
 
 # Create your models here.
 class Organization(models.Model):
@@ -26,6 +19,7 @@ class Organization(models.Model):
   zip_code = models.CharField(max_length=50)
   company_phone_number = models.IntegerField(unique=True)
   # member = models.ManyToManyField(addUser)
+  premiumUser = models.BooleanField(default=False, null=True, blank=True)
   
 
   def __str__(self):
@@ -46,6 +40,15 @@ class addMember(models.Model):
   email = models.CharField(max_length=200)
   role = models.CharField(max_length=100, choices=PERMISSION)
   is_company = models.BooleanField(default=False)
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
+    payment_id = models.CharField(max_length= 100)
+    payment_method = models.CharField(max_length=100)
+    amount_paid = models.IntegerField()
+    status = models.CharField(max_length = 100)
+    created_at = models.DateTimeField(auto_now_add=True)
   
 class Order(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -11,20 +11,80 @@ from rest_framework import status, generics, views, viewsets, permissions, respo
 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from organization.ssl import sslcommerz_payment_gateway
+import random
 
 ######### payment Gateway method ###########
-# class successView(views.APIView):
-#   permission_classes = [permissions.IsAuthenticated]
-#   def post(self, request):
-#     user_id = request.user
+@method_decorator(csrf_exempt, name='dispatch')
+class successView(views.APIView):
+  # permission_classes = [permissions.IsAuthenticated]
+  def post(self, request):
+    # user_id = request.user
+    data = request.data
+    user_id = int(data['value_b'])
+    org_id = int(data['value_c'])
+    user = User.objects.get(pk=user_id)
+    org = Organization.objects.get(pk = org_id)
+    
+    payment = Payment(
+        user = user,
+        organization=org,
+        payment_id =data['tran_id'],
+        payment_method = data['card_issuer'],
+        amount_paid = int(data['store_amount'][0]),
+        status =data['status'],
+    )
+    payment.save()
+    
+    order = Order.objects.get(user=user, is_ordered=False, order_number=int(data['value_a']))
+    
+    order.payment = payment
+    order.is_ordered = True
+    order.save()
+    
+    org = Organization.objects.get(id= org_id)
+    user = User.objects.get(id = user_id)
+    premium = premiumOrder()
+    premium.organization = org
+    premium.payment = payment
+    premium.user = user 
+    premium.ordered = True
+    premium.save()
+    org.premiumUser = True
+    org.save()
+    return response.Response("Success")
 
-# class PlacePremiumView(views.APIView):
+# class test(views.APIView):
 #   permission_classes = [permissions.IsAuthenticated]
   
-#   def post(self, request):
-    # serializer = kkk
-    
+#   def post(self, request, )
 
+########## Permium button Click #########
+class PlaceOrderPremiumView(views.APIView):
+  permission_classes = [permissions.IsAuthenticated]
+  
+  def post(self, request, pk):
+    user = request.user
+    try:
+      org = Organization.objects.get(pk=pk)
+      if org.premiumUser == True:
+        return response.Response("Alread You are Premium User")
+      order = Order.objects.create(user=request.user, organization=org, is_ordered= False)
+
+      order.order_number = order.id
+      # sslcommerz_payment_gateway(request,order.id, pk, request.user.id)
+      lst = {}
+      lst['order_id'] = order.id 
+      lst['org_id'] = pk
+      lst['user_id'] = request.user.id
+      lst['amount'] = 1000
+      order.save()
+      payment_url = sslcommerz_payment_gateway(request, order.id, pk, request.user.id, 1000)
+      return response.Response(payment_url)
+    except Organization.DoesNotExist:
+      return response.Response('Organization Error')      
+        
+########### request SSl Commerce ########
 
 
 ############## Register Organization #################
