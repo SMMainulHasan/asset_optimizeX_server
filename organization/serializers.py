@@ -69,6 +69,7 @@ class memberInvitedAcceptSerializer(serializers.Serializer):
     else:
       raise ValidationError('Token is not Valid or Expired')
 
+
 class OrderSerializer(serializers.ModelSerializer):
   class Meta:
     model = Order

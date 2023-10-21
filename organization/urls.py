@@ -13,4 +13,8 @@ urlpatterns = [
   path('list/', OrganizationTotal.as_view()),
   path('register/<uid>/<token>/<organization_name>/', registerOrganizationVerify.as_view()),
   path('add-user/<uid>/<token>/<org_name>/', invitedActive.as_view()),
+  
+  path('member/<int:org_id>/', OrganizationMember.as_view()),
+  
+  path('member-remove/<int:pk>/', MemberRemoveView.as_view()),
 ]

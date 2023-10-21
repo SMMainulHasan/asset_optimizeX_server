@@ -9,7 +9,6 @@ from account.utils import Util
 from organization.models import *
 from rest_framework import status, generics, views, viewsets, permissions, response
 
-from organization.ssl import sslcommerz_payment_gateway
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
@@ -105,6 +104,55 @@ class OrganizationTotal(views.APIView):
           'member_organizations': member_organization_data,
           })  
 
+########### Organization MemberAll ########
+class OrganizationMember(views.APIView):
+  permission_classes = [permissions.IsAuthenticated]
+  
+  def get(self, request, org_id):
+    try:
+      org = Organization.objects.get(id = org_id)
+      
+      lst = []
+      k = 0
+      dic = {}
+      for i in org.member.all():
+        k = i.id        
+        lst.append(i.email)
+        # print(i.rol
+      member = addMember.objects.filter(organization__member = k)
+     
+      j = 0
+      for i in member: 
+        ls = []
+        ls.append(i.role)
+        ls.append(i.is_company)
+        dic[lst[j]] = ls
+        j+=1
+      print(dic)
+      return response.Response(dic,status=status.HTTP_200_OK)
+    except Organization.DoesNotExist:
+      return response.Response("Orgnization information not valid")
+  
+########### Organization Member Remove ###### 
+class MemberRemoveView(generics.DestroyAPIView):
+    queryset = addMember.objects.all()
+    serializer_class = addMemberSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def destroy(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')    
+        print(pk)
+        try:   
+            member_id = addMember.objects.get(pk = pk)
+            print(member_id.email)
+          
+            member_id.delete()
+            return response.Response({'message':'Delete Successfully'})
+        except addMember.DoesNotExist:
+            return response.Response({
+                'message':'Not valid asset'
+            })
+
           
 ########### Organization Member Request View #######
 class addMemberView(views.APIView):
@@ -160,8 +208,6 @@ class addMemberView(views.APIView):
         return response.Response({'msg':"Organization not register"})
     except User.DoesNotExist:
       return response.Response({"msg":"user not register"})
-
-
          
 #  ############## Active Organization ##################
 class invitedActive(views.APIView):
