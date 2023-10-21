@@ -33,7 +33,7 @@ def sslcommerz_payment_gateway(request, order_id,org_id, user_id, amount):
     post_body['shipping_method'] = "NO"
     post_body['multi_card_name'] = ""
     post_body['num_of_item'] = 1
-    post_body['product_name'] = "Test"
+    post_body['product_name'] = "request.user.name"
     post_body['product_category'] = "Test Category"
     post_body['product_profile'] = "general"
 
@@ -41,7 +41,7 @@ def sslcommerz_payment_gateway(request, order_id,org_id, user_id, amount):
     post_body['value_a'] = order_id
     post_body['value_b'] = user_id
     post_body['value_c'] = org_id
-    post_body['value_d'] = 'email'
+    post_body['value_d'] = amount
 
     response = sslcommez.createSession(post_body)
     print(response)

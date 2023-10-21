@@ -1,5 +1,5 @@
 from rest_framework.generics import (CreateAPIView, ListAPIView,
-                                     RetrieveUpdateDestroyAPIView)
+                                     RetrieveUpdateDestroyAPIView, UpdateAPIView, DestroyAPIView)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import response, views, status
 from account.models import User
@@ -20,12 +20,17 @@ class CreateLibraryAPIView(views.APIView):
         return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         
         
-
-class LibraryDetailAPIView(RetrieveUpdateDestroyAPIView):
+###### Library Update View #######
+class LibraryUpdateView(UpdateAPIView):
     queryset = Library.objects.all()
     serializer_class = CreateLibrarySerializer
     permission_classes = [IsAuthenticated]
-
+    
+##### Library Delete View ######
+class LibraryDeleteView(DestroyAPIView):
+    queryset = Library.objects.all()
+    serializer_class = CreateLibrarySerializer
+    permission_classes = [IsAuthenticated]
 
 class ListLibraryAPIView(views.APIView):
     permission_classes = [IsAuthenticated]

@@ -23,6 +23,7 @@ class successView(views.APIView):
     data = request.data
     user_id = int(data['value_b'])
     org_id = int(data['value_c'])
+    amount = int(data['value_d'])
     user = User.objects.get(pk=user_id)
     org = Organization.objects.get(pk = org_id)
     
@@ -31,7 +32,7 @@ class successView(views.APIView):
         organization=org,
         payment_id =data['tran_id'],
         payment_method = data['card_issuer'],
-        amount_paid = int(data['store_amount'][0]),
+        amount_paid= amount,
         status =data['status'],
     )
     payment.save()
@@ -52,12 +53,15 @@ class successView(views.APIView):
     premium.save()
     org.premiumUser = True
     org.save()
-    return response.Response("Success")
+    lst = []
+    lst.append(payment.user)
+    lst.append(payment.organization)
+    lst.append(payment.payment_id)
+    lst.append(payment.payment_method)
+    lst.append(payment.amount_paid)
+    lst.append(payment.status)
+    return response.Response(status=status.HTTP_200_OK)
 
-# class test(views.APIView):
-#   permission_classes = [permissions.IsAuthenticated]
-  
-#   def post(self, request, )
 
 ########## Permium button Click #########
 class PlaceOrderPremiumView(views.APIView):
@@ -84,8 +88,6 @@ class PlaceOrderPremiumView(views.APIView):
     except Organization.DoesNotExist:
       return response.Response('Organization Error')      
         
-########### request SSl Commerce ########
-
 
 ############## Register Organization #################
 class OrganizationRegisterView(viewsets.ModelViewSet):
@@ -129,7 +131,19 @@ class registerOrganizationVerify(views.APIView):
       })
     return response.Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
           
+############## Organization Update  View ###############
+class organizationUpdateView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Organization.objects.all()
+    serializer_class = organizationUpdateSerializer
  
+############## Organization Delete  View ###############
+class organizationDeleteView(generics.DestroyAPIView):
+  permission_classes = [permissions.IsAuthenticated]
+  queryset = Organization.objects.all()
+  serializer_class = organigationRegisterSerializer
+
+
 ############ Organization Get ##########
 class OrganizationTotal(views.APIView):
     renderer_classes = [UserRenderer]

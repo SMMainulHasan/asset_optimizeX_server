@@ -22,4 +22,9 @@ urlpatterns = [
   path('payment/<int:pk>/', PlaceOrderPremiumView.as_view()),
   path('success/', successView.as_view()),
   
+  ### org update  ###
+  path('update/<int:pk>/', organizationUpdateView.as_view()),
+  ### org Delete ###
+  path('delete/<int:pk>/', organizationDeleteView.as_view()),
+  
 ]

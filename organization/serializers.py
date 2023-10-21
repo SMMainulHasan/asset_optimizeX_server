@@ -70,7 +70,7 @@ class memberInvitedAcceptSerializer(serializers.Serializer):
       raise ValidationError('Token is not Valid or Expired')
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class organizationUpdateSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Order
-    fields = ['']
+    model = Organization
+    fields = ['organization_name', 'description', 'organization_logo', 'country', 'zip_code', 'company_phone_number']
