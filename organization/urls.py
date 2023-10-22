@@ -28,9 +28,9 @@ urlpatterns = [
   path('delete/<int:pk>/', organizationDeleteView.as_view()),
   
   ### Org Detaail ###
-  path('detail/<slug:slug>/', organizationDetailView.as_view()),
+  path('detail/<int:pk>/', organizationDetailView.as_view()),
   
   ### Payment History ###
-  path('history/<slug:slug>/', PaymentHistoryView.as_view()),
+  path('payment-history/<int:pk>/', PaymentHistoryView.as_view()),
   
 ]
