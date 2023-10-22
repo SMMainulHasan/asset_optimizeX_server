@@ -29,7 +29,7 @@ class successView(views.APIView):
     user = User.objects.get(pk=user_id)
     org = Organization.objects.get(pk = org_id)
     
-    payment = Payment(
+    payment = Payment.objects.create(
         user = user,
         organization=org,
         payment_id =data['tran_id'],
@@ -55,16 +55,8 @@ class successView(views.APIView):
     premium.save()
     org.premiumUser = True
     org.save()
-    lst = []
-    lst.append(payment.user)
-    lst.append(payment.organization)
-    lst.append(payment.payment_id)
-    lst.append(payment.payment_method)
-    lst.append(payment.amount_paid)
-    lst.append(payment.status)
+    
     return HttpResponseRedirect(redirect_to='http://localhost:5173/app/org/4')
-
-
 
 ########## Permium button Click #########
 class PlaceOrderPremiumView(views.APIView):
@@ -75,7 +67,7 @@ class PlaceOrderPremiumView(views.APIView):
     try:
       org = Organization.objects.get(pk=pk)
       if org.premiumUser == True:
-        return response.Response("Alread You are Premium User")
+        return response.Response("Already You are Premium User")
       order = Order.objects.create(user=request.user, organization=org, is_ordered= False)
 
       order.order_number = order.id
@@ -90,7 +82,33 @@ class PlaceOrderPremiumView(views.APIView):
       return response.Response(payment_url)
     except Organization.DoesNotExist:
       return response.Response('Organization Error')      
-        
+       
+######### Payment History For Organization #######
+class PaymentHistoryView(views.APIView):
+  # permission_classes = [permissions.IsAuthenticated]
+  
+  def get(self, request, slug):
+    try:
+      org = Organization.objects.get(slug=slug)
+      payment = Payment.objects.filter(organization=org)
+      lst = []
+      
+      for i in payment:
+        dic = {}
+        dic['user'] = i.user.name
+        dic['organization_name'] = i.organization.organization_name
+        dic['payment_id'] = i.payment_id
+        dic['payment_method'] = i.payment_method
+        dic['amount'] = i.amount_paid
+        dic['status'] = i.status
+        dic['created_at'] = i.created_at
+        lst.append(dic)
+    
+      return response.Response(lst, status=status.HTTP_200_OK)
+    except Organization.DoesNotExist:
+      return response.Response('Information not Valid')
+    
+   
 
 ############## Register Organization #################
 class OrganizationRegisterView(viewsets.ModelViewSet):
@@ -140,6 +158,24 @@ class organizationUpdateView(generics.UpdateAPIView):
     queryset = Organization.objects.all()
     serializer_class = organizationUpdateSerializer
  
+######### Organization Detail  View ###############
+class organizationDetailView(views.APIView):
+  permission_classes = [permissions.IsAuthenticated]
+  
+  def get(self, request, slug):
+    org = Organization.objects.get(slug=slug)
+    lst = {}
+    # lst['owner'] = org.owner
+    lst['organization_name'] = org.organization_name
+    lst['organization_logo'] = org.organization_logo.url
+    lst['description'] = org.description
+    lst['country'] = org.country
+    lst['zip_code'] = org.zip_code
+    lst['org_phone_number'] = org.company_phone_number
+    lst['created_date'] = org.created_date
+    
+    return response.Response(lst, status=status.HTTP_200_OK)
+ 
 ############## Organization Delete  View ###############
 class organizationDeleteView(generics.DestroyAPIView):
   permission_classes = [permissions.IsAuthenticated]
@@ -147,7 +183,7 @@ class organizationDeleteView(generics.DestroyAPIView):
   serializer_class = organigationRegisterSerializer
 
 
-############ Organization Get ##########
+############ Organization Get Total ##########
 class OrganizationTotal(views.APIView):
     renderer_classes = [UserRenderer]
     permission_classes = [permissions.IsAuthenticated]

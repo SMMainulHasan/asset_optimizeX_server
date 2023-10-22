@@ -88,11 +88,13 @@ class assetAllImageView(views.APIView):
                             tem['asset'] = j.asset.url
                             temp.append(tem)
         
-        # photo = {}  
-        # photo['total_img'] = len(temp)
-        # temp.append(photo)
-        # print(temp)           
+        total_img = {}  
+        total_img['total_img'] = len(temp)
+        lstt = []
+        lstt.append(total_img)
+        print(temp)           
         print(temp)
-        return response.Response(temp, status=status.HTTP_200_OK)
+        return response.Response({'len':lstt, 
+                                  'asset': temp}, status=status.HTTP_200_OK)
         
         
