@@ -8,6 +8,8 @@ from django.contrib.auth.tokens import default_token_generator
 from account.utils import Util
 from organization.models import *
 from rest_framework import status, generics, views, viewsets, permissions, response
+from django.http import HttpResponseRedirect
+
 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -60,7 +62,8 @@ class successView(views.APIView):
     lst.append(payment.payment_method)
     lst.append(payment.amount_paid)
     lst.append(payment.status)
-    return response.Response(status=status.HTTP_200_OK)
+    return HttpResponseRedirect(redirect_to='http://localhost:5173/app/org/4')
+
 
 
 ########## Permium button Click #########
@@ -157,6 +160,7 @@ class OrganizationTotal(views.APIView):
           dic = {}
           dic['id'] = i.id
           dic['organization_name'] = i.organization_name
+          dic['premiumUser'] = i.premiumUser
           owner_organization_data.append(dic)
           
       member_organization_data = []     
@@ -170,6 +174,7 @@ class OrganizationTotal(views.APIView):
           for j in org:
             dic['id'] = j.id
             dic['organization_name'] = j.organization_name
+            dic['premiumUser'] = j.premiumUser
           member_organization_data.append(dic)
       
     
@@ -188,7 +193,7 @@ class OrganizationMember(views.APIView):
       
       lst = []
       k = 0
-      dic = {}
+      dic =[]
       for i in org.member.all():
         k = i.id        
         lst.append(i.email)
@@ -197,11 +202,12 @@ class OrganizationMember(views.APIView):
      
       j = 0
       for i in member: 
-        ls = []
-        ls.append(i.role)
-        ls.append(i.is_company)
-        dic[lst[j]] = ls
-        j+=1
+        ls = {}
+        ls['role'] = i.role
+        ls['is_company'] = i.is_company
+        ls['email'] = i.email
+        ls['id'] = i.id
+        dic.append(ls)
       print(dic)
       return response.Response(dic,status=status.HTTP_200_OK)
     except Organization.DoesNotExist:
