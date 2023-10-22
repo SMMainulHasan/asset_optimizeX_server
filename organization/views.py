@@ -87,9 +87,9 @@ class PlaceOrderPremiumView(views.APIView):
 class PaymentHistoryView(views.APIView):
   # permission_classes = [permissions.IsAuthenticated]
   
-  def get(self, request, slug):
+  def get(self, request, pk):
     try:
-      org = Organization.objects.get(slug=slug)
+      org = Organization.objects.get(pk= pk)
       payment = Payment.objects.filter(organization=org)
       lst = []
       
@@ -162,8 +162,8 @@ class organizationUpdateView(generics.UpdateAPIView):
 class organizationDetailView(views.APIView):
   permission_classes = [permissions.IsAuthenticated]
   
-  def get(self, request, slug):
-    org = Organization.objects.get(slug=slug)
+  def get(self, request, pk):
+    org = Organization.objects.get( pk = pk)
     lst = {}
     # lst['owner'] = org.owner
     lst['organization_name'] = org.organization_name
