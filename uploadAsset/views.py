@@ -186,3 +186,4 @@ class CurrentAssetView(generics.RetrieveAPIView):
 class AssetVersionListView(generics.ListAPIView):
     queryset = AssetVersion.objects.all()
     serializer_class = AssetVersionSerializer
+    

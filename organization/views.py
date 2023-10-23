@@ -56,7 +56,7 @@ class successView(views.APIView):
     org.premiumUser = True
     org.save()
     
-    return HttpResponseRedirect(redirect_to='http://localhost:5173/app/org/4')
+    return HttpResponseRedirect(redirect_to='http://localhost:5173/app')
 
 ########## Permium button Click #########
 class PlaceOrderPremiumView(views.APIView):
@@ -66,6 +66,11 @@ class PlaceOrderPremiumView(views.APIView):
     user = request.user
     try:
       org = Organization.objects.get(pk=pk)
+      member = addMember.objects.filter(organization=org)
+      for i in member:
+        if i.user == self.request.user:
+          if i.role == 'Contributor' or i.role == 'Viewer':
+            return response.Response({'message': "You don't have permission to Payment method."})
       if org.premiumUser == True:
         return response.Response("Already You are Premium User")
       order = Order.objects.create(user=request.user, organization=org, is_ordered= False)
@@ -157,6 +162,20 @@ class organizationUpdateView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     queryset = Organization.objects.all()
     serializer_class = organizationUpdateSerializer
+    
+    def perform_update(self, serializer):
+      pk = self.kwargs.get('pk')
+      org = Organization.objects.get(pk = pk)
+      member = addMember.objects.filter(organization=org)
+      print(self.request.user)
+      for i in member:
+        if i.user == self.request.user:
+          print(i.user)
+          return response.Response({"message" : "You don't have permission to Organization Update."})
+      print("ue")
+      serializer.save()
+      return response.Response({'message':"Successfully Updated."})
+    
  
 ######### Organization Detail  View ###############
 class organizationDetailView(views.APIView):
@@ -181,7 +200,17 @@ class organizationDeleteView(generics.DestroyAPIView):
   permission_classes = [permissions.IsAuthenticated]
   queryset = Organization.objects.all()
   serializer_class = organigationRegisterSerializer
-
+  
+  def destroy(self, request, *args, **kwargs):
+    pk = self.kwargs.get('pk')
+    org = Organization.objects.get(pk = pk)
+    member = addMember.objects.filter(organization=org)
+    for i in member:
+      if i.user == self.request.user:
+        return response.Response({'message':"You don't have permission to Delete Organization."})
+    org.delete()
+    return response.Response({'message':"Successfully Delete."})
+    
 
 ############ Organization Get Total ##########
 class OrganizationTotal(views.APIView):
@@ -260,10 +289,15 @@ class MemberRemoveView(generics.DestroyAPIView):
         print(pk)
         try:   
             member_id = addMember.objects.get(pk = pk)
-            print(member_id.email)
-          
-            member_id.delete()
-            return response.Response({'message':'Delete Successfully'})
+            try:
+              member = addMember.objects.get(organization__member = self.request.user)
+              if member.role == 'Contributor' or member.role == 'Viewer':
+                return response.Response({'message':"You don't have permission to remove member."})
+              member_id.delete()
+              return response.Response({"message":"Member Remove Successfully"})
+            except: 
+              member_id.delete()
+              return response.Response({'message':'Delete Successfully'})
         except addMember.DoesNotExist:
             return response.Response({
                 'message':'Not valid asset'
@@ -287,7 +321,7 @@ class addMemberView(views.APIView):
       if i.user == request.user:
         if i.role == 'Contributor' or i.role == 'Consumer':
           print(i.role)
-          return response.Response({"msg": "Your are not access this organization add user option"})
+          return response.Response({"msg": "You don't have permission add member option."})
     try:
       user = User.objects.get(email=email)
       if request.user == user:
@@ -296,7 +330,7 @@ class addMemberView(views.APIView):
         organization = Organization.objects.get(organization_name=organization_name)
         if organization.owner == user:
           return response.Response({
-            "msg":"This user Organization Owner you are not invited request"
+            "msg":"Not Valid Email"
           })
         th = organization.member.all()
         for i in th:

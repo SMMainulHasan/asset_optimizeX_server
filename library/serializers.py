@@ -20,7 +20,7 @@ class CreateLibrarySerializer(serializers.ModelSerializer):
                 if i.role == 'Admin' or i.role == 'Contributor':
                     break
                 else:
-                    raise serializers.ValidationError('You are not access create library because you are Consumer User') 
+                    raise serializers.ValidationError("You don't have permission to Create Library.") 
                     return attrs       
         try:
             org = Organization.objects.get(organization_name=organization) 
@@ -33,5 +33,6 @@ class CreateLibrarySerializer(serializers.ModelSerializer):
             return attrs
         except Organization.DoesNotExist:
             raise serializers.ValidationError("Organization Didn't find")
-                             
+ 
+                            
      

@@ -26,11 +26,51 @@ class LibraryUpdateView(UpdateAPIView):
     serializer_class = CreateLibrarySerializer
     permission_classes = [IsAuthenticated]
     
+    def perform_update(self, serializer):
+        pk = self.kwargs.get('pk')
+        org = self.request.data['organization']
+        
+        try:
+            library = Library.objects.get(id = pk)
+            member = addMember.objects.filter(organization=org)
+            for i in member:
+                if i.user == self.request.user:
+                    if i.role == 'Admin' or i.role == 'Contributor':
+                        serializer.save()
+                        return response.Response({'message':'Update Successfully.'})
+                    else:
+                        return response.Response({'message':"You don't have permission to Delete."})
+            serializer.save()
+            
+            return response.Response({'message':'Update Successfully'})
+        except Library.DoesNotExist:
+            return response.Response({"message":"Error"})
+            
+    
 ##### Library Delete View ######
 class LibraryDeleteView(DestroyAPIView):
     queryset = Library.objects.all()
     serializer_class = CreateLibrarySerializer
     permission_classes = [IsAuthenticated]
+    
+    def destroy(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        org = self.request.data['organization']
+        try:
+            library = Library.objects.get(id = pk)
+            member = addMember.objects.filter(organization=org)
+            for i in member:
+                if i.user == self.request.user:
+                    if i.role == 'Admin':
+                        library.delete()
+                        return response.Response({'message':'Delete Successfully.'})
+                    else:
+                        return response.Response({'message':"You don't have permission to Delete"})
+            library.delete()
+            return response.Response({'message':'Delete Successfully.'})
+        except Library.DoesNotExist:
+            return response.Response({'message':"Error"})
+            
 
 class ListLibraryAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
