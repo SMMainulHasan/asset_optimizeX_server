@@ -31,7 +31,7 @@ class AssetListsCreateView(views.APIView):
                 if i.role == 'Admin' or i.role == 'Contributor':
                     break
                 else:
-                    return Response({"message":"You are not Upload asset because you are Consumer user access"})
+                    return Response({"message":"You don't have permission to Upload Asset."})
         
         form_data['title'] = title
         form_data['library'] = library
@@ -114,7 +114,7 @@ class AssetUpdateView(generics.UpdateAPIView):
                         serializer.save()
                         return Response({'message':'Update Successfully'})
                     else:
-                        return Response({'message':'You are not Update because You are Consumer User'})
+                        return Response({'message':"You don't have permission to Delete."})
             serializer.save()
             return Response({'message':'Update Successfully'})
         except uploadAsset.DoesNotExist:
@@ -140,7 +140,7 @@ class AssetDeleteView(generics.DestroyAPIView):
                         up_asset.delete()
                         return Response({'message':'Delete Successfully'})
                     else:
-                        return Response({'message':'You are not Delete because You are Consumer/Contributor User'})
+                        return Response({'message':"You don't have permission to Delete."})
             up_asset.delete()
             return Response({'message':'Delete Successfully'})
         except uploadAsset.DoesNotExist:
@@ -186,3 +186,4 @@ class CurrentAssetView(generics.RetrieveAPIView):
 class AssetVersionListView(generics.ListAPIView):
     queryset = AssetVersion.objects.all()
     serializer_class = AssetVersionSerializer
+    

@@ -1,5 +1,5 @@
 from rest_framework.generics import (CreateAPIView, ListAPIView,
-                                     RetrieveUpdateDestroyAPIView)
+                                     RetrieveUpdateDestroyAPIView, UpdateAPIView, DestroyAPIView)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import response, views, status
 from account.models import User
@@ -20,12 +20,57 @@ class CreateLibraryAPIView(views.APIView):
         return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         
         
-
-class LibraryDetailAPIView(RetrieveUpdateDestroyAPIView):
+###### Library Update View #######
+class LibraryUpdateView(UpdateAPIView):
     queryset = Library.objects.all()
     serializer_class = CreateLibrarySerializer
     permission_classes = [IsAuthenticated]
-
+    
+    def perform_update(self, serializer):
+        pk = self.kwargs.get('pk')
+        org = self.request.data['organization']
+        
+        try:
+            library = Library.objects.get(id = pk)
+            member = addMember.objects.filter(organization=org)
+            for i in member:
+                if i.user == self.request.user:
+                    if i.role == 'Admin' or i.role == 'Contributor':
+                        serializer.save()
+                        return response.Response({'message':'Update Successfully.'})
+                    else:
+                        return response.Response({'message':"You don't have permission to Delete."})
+            serializer.save()
+            
+            return response.Response({'message':'Update Successfully'})
+        except Library.DoesNotExist:
+            return response.Response({"message":"Error"})
+            
+    
+##### Library Delete View ######
+class LibraryDeleteView(DestroyAPIView):
+    queryset = Library.objects.all()
+    serializer_class = CreateLibrarySerializer
+    permission_classes = [IsAuthenticated]
+    
+    def destroy(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        org = self.request.data['organization']
+        try:
+            library = Library.objects.get(id = pk)
+            member = addMember.objects.filter(organization=org)
+            for i in member:
+                if i.user == self.request.user:
+                    if i.role == 'Admin':
+                        library.delete()
+                        return response.Response({'message':'Delete Successfully.'})
+                    else:
+                        return response.Response({'message':"You don't have permission to Delete"})
+            library.delete()
+            return response.Response({'message':'Delete Successfully.'})
+        except Library.DoesNotExist:
+            return response.Response({'message':"Error"})
+            
 
 class ListLibraryAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -83,11 +128,13 @@ class assetAllImageView(views.APIView):
                             tem['asset'] = j.asset.url
                             temp.append(tem)
         
-        # photo = {}  
-        # photo['total_img'] = len(temp)
-        # temp.append(photo)
-        # print(temp)           
+        total_img = {}  
+        total_img['total_img'] = len(temp)
+        lstt = []
+        lstt.append(total_img)
+        print(temp)           
         print(temp)
-        return response.Response(temp, status=status.HTTP_200_OK)
+        return response.Response({'len':lstt, 
+                                  'asset': temp}, status=status.HTTP_200_OK)
         
         
