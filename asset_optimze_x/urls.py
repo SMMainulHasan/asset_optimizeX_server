@@ -9,7 +9,6 @@ urlpatterns = [
      path('api/organization/', include('organization.urls')),
 
      path('api/', include('uploadAsset.urls')),
-     path('api/category/', include('category.urls')),
      path('api/library/', include('library.urls')),
      
      path('api/share/', include('share_assets.urls')),
