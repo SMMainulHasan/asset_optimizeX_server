@@ -21,6 +21,7 @@ class Organization(models.Model):
   # member = models.ManyToManyField(addUser)
   premiumUser = models.BooleanField(default=False, null=True, blank=True)
   
+  
 
   def __str__(self):
       return self.organization_name

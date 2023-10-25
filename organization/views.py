@@ -186,7 +186,7 @@ class organizationDetailView(views.APIView):
     lst = {}
     # lst['owner'] = org.owner
     lst['organization_name'] = org.organization_name
-    lst['organization_logo'] = org.organization_logo.url
+    # lst['organization_logo'] = org.organization_logo.url
     lst['description'] = org.description
     lst['country'] = org.country
     lst['zip_code'] = org.zip_code
@@ -259,12 +259,12 @@ class OrganizationMember(views.APIView):
       lst = []
       k = 0
       dic =[]
-      for i in org.member.all():
-        k = i.id        
-        lst.append(i.email)
-        # print(i.rol
-      member = addMember.objects.filter(organization__member = k)
-     
+      # for i in org.member.all():
+      #   k = i.id        
+      #   lst.append(i.email)
+      #   # print(i.rol
+      member = addMember.objects.filter(organization = org)
+      
       j = 0
       for i in member: 
         ls = {}

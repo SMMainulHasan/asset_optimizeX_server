@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'category',
     'library',
     'share_assets',
+    'contact',
+    'feedback',
        
 ]
 
