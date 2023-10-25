@@ -114,7 +114,6 @@ class PaymentHistoryView(views.APIView):
       return response.Response('Information not Valid')
     
    
-
 ############## Register Organization #################
 class OrganizationRegisterView(viewsets.ModelViewSet):
   permission_classes = [permissions.IsAuthenticated]
@@ -194,6 +193,7 @@ class organizationDetailView(views.APIView):
     lst['zip_code'] = org.zip_code
     lst['org_phone_number'] = org.company_phone_number
     lst['created_date'] = org.created_date
+    lst['invited_code'] = org.invited_code
     
     return response.Response(lst, status=status.HTTP_200_OK)
  
