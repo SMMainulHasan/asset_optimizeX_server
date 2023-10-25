@@ -18,6 +18,7 @@ class Organization(models.Model):
   country = models.CharField(max_length=100)
   zip_code = models.CharField(max_length=50)
   company_phone_number = models.IntegerField(unique=True)
+  invited_code = models.IntegerField(null=True, blank=True)
   # member = models.ManyToManyField(addUser)
   premiumUser = models.BooleanField(default=False, null=True, blank=True)
   

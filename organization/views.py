@@ -130,8 +130,10 @@ class OrganizationRegisterView(viewsets.ModelViewSet):
       uid = urlsafe_base64_encode(force_bytes(user.id))
       token = default_token_generator.make_token(user)
       organization_name =  serializer.data.get('organization_name')    
+      
       organization_name = urlsafe_base64_encode(force_bytes(organization_name))   
-            
+      
+      
       link = "http://localhost:5173/api/organization/register/"
       print("uid", uid, " Token", token, " link", link, 'organizationName', organization_name)
       body = 'Click Following link to Active Your Account ' + link +  uid + '/'+ token + '/' + organization_name
@@ -303,7 +305,9 @@ class MemberRemoveView(generics.DestroyAPIView):
                 'message':'Not valid asset'
             })
 
-          
+####### Invited Code Member Add #######
+
+        
 ########### Organization Member Request View #######
 class addMemberView(views.APIView):
   permission_classes= [permissions.IsAuthenticated]
@@ -358,7 +362,7 @@ class addMemberView(views.APIView):
         return response.Response({'msg':"Organization not register"})
     except User.DoesNotExist:
       return response.Response({"msg":"user not register"})
-         
+               
 #  ############## Active Organization ##################
 class invitedActive(views.APIView):
   renderer_classes = [UserRenderer]
@@ -370,4 +374,38 @@ class invitedActive(views.APIView):
         'massage':'Invited request Confirm Successfully'
       })
     return response.Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)    
-      
+ 
+########### Organization Invited Member Request View #######
+class InvitedCodeaddMemberView(views.APIView):
+  permission_classes= [permissions.IsAuthenticated]
+  renderer_classes = [UserRenderer]
+  def post(self, request):
+    serializer = InvitedaddMemberSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    invited_code = serializer.data.get('invited_code')
+    organization_name = serializer.data.get('organization_name')
+    
+    try: 
+      org = Organization.objects.get(organization_name=organization_name)
+      try:
+        user = User.objects.get(id = request.user.id) 
+         
+        if org.owner == user:
+          return response.Response({'message':'You are Owner This organization.'})
+        for i in org.member.all():
+          if i.email == user.email:
+            return response.Response({'message': "Already You added This Organization Member."})
+        role = 'Consumer'
+        if org.invited_code == invited_code:  
+          member = addMember.objects.create(user=user, organization=org, email=user.email, role=role, is_company=True)
+          member.save()
+          org.save()
+          return response.Response({'message':'You have Viewer permission in this Organization.'})
+        else:
+          return response.Response({'message':"Information didn't match"})
+      except User.DoesNotExist:
+        return response.Response({'message':'Authentication credentials were not provided.'})
+    except Organization.DoesNotExist:
+      return response.Response({'message':"Organization didn't find"})
+
+        

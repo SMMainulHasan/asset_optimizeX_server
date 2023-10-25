@@ -33,4 +33,7 @@ urlpatterns = [
   ### Payment History ###
   path('payment-history/<int:pk>/', PaymentHistoryView.as_view()),
   
+  ### Invited code member Add ###
+  path('code/', InvitedCodeaddMemberView.as_view()),
+  
 ]
