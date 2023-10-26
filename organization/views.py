@@ -408,4 +408,14 @@ class InvitedCodeaddMemberView(views.APIView):
     except Organization.DoesNotExist:
       return response.Response({'message':"Organization didn't find"})
 
+
+########## Member Permission Edit ########
+class MemberPermissionUpdateView(generics.UpdateAPIView):
+  permission_classes = [permissions.IsAuthenticated]
+  serializer_class = MemberPermissionUpdateSerializer
+  queryset = Organization.objects.all()
+  
+  # def perform_update(self, serializer):
+  
+  
         

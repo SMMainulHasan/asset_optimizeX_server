@@ -84,3 +84,10 @@ class organizationUpdateSerializer(serializers.ModelSerializer):
   class Meta:
     model = Organization
     fields = ['organization_name', 'description', 'organization_logo', 'country', 'zip_code', 'company_phone_number']
+
+####### Member Permission Update Serializers ########
+class MemberPermissionUpdateSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = addMember
+    fields = '__all__'
+

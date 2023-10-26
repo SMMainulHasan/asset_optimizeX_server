@@ -54,20 +54,24 @@ class LibraryDeleteView(DestroyAPIView):
     permission_classes = [IsAuthenticated]
     
     def destroy(self, request, *args, **kwargs):
-        pk = self.kwargs.get('pk')
-        org = self.request.data['organization']
+        pk = self.kwargs.get('pk')       
+        
         try:
             library = Library.objects.get(id = pk)
-            member = addMember.objects.filter(organization=org)
-            for i in member:
-                if i.user == self.request.user:
-                    if i.role == 'Admin':
-                        library.delete()
-                        return response.Response({'message':'Delete Successfully.'})
-                    else:
-                        return response.Response({'message':"You don't have permission to Delete"})
-            library.delete()
-            return response.Response({'message':'Delete Successfully.'})
+            try:
+                org = Organization.objects.get(id = library.organization.id)
+                member = addMember.objects.filter(organization=org)
+                for i in member:
+                    if i.user == self.request.user:
+                        if i.role == 'Admin':
+                            library.delete()
+                            return response.Response({'message':'Delete Successfully.'})
+                        else:
+                            return response.Response({'message':"You don't have permission to Delete"})
+                library.delete()
+                return response.Response({'message':'Delete Successfully.'})
+            except Organization.DoesNotExist:
+                response.Response({"message":"Error"})
         except Library.DoesNotExist:
             return response.Response({'message':"Error"})
             
