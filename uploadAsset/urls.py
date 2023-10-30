@@ -1,8 +1,13 @@
 from django.urls import path, include
 from . import views
+# from rest_framework.routers import DefaultRouter
+
+# router = DefaultRouter()
+# router.register(r'video', views.FileViewSet)
 
 urlpatterns = [
     #libraywise data retrieve
+    # path('', include(router.urls)),
     path('libraries/<int:library_id>/assets/', views.AssetListCreateView.as_view(), name='library-assets'),
 
     # List all assets or create a new asset
@@ -21,4 +26,10 @@ urlpatterns = [
      path('asset-versions/', views.AssetVersionListView.as_view(), name='asset-versions-list'),
      path('assets/prev/<int:asset_id>/', views.PreviousAssetVersionsView.as_view(), name='previous-asset-versions'),
      path('assets/current/<int:pk>/', views.CurrentAssetView.as_view(), name='current-asset'),
+     
+     ## asset Download ##
+     path('download/<int:id>/', views.FileDownloadAPIView.as_view()),
+     path('search/image/<int:pk>/', views.ImageFilter.as_view()),
+     path('search/audio/<int:pk>/', views.AudioFilter.as_view()),
+     path('search/video/<int:pk>/', views.VideoFilter.as_view()),
 ]

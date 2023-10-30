@@ -3,6 +3,9 @@ from library.models import Library
 from account.models import User
 from django.utils import timezone
 from organization.models import Organization
+from PIL import Image
+from py7zr import SevenZipFile
+import os
 
 # Create your models here.
 class Tag(models.Model):
@@ -31,9 +34,15 @@ class uploadAsset(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     versions = models.ManyToManyField(AssetVersion, blank=True)
+    
 
     def save(self, *args, **kwargs):
         # Check if the asset file has changed
+        
+
+        # with SevenZipFile(self.asset.path, mode = 'w') as f:
+        #     f.write(self.asset.path, compression_level = 9)
+        #     os.rename(f.filename, self.asset.path)
         if self.pk:
             existing_asset = uploadAsset.objects.get(pk=self.pk)
             if existing_asset.asset != self.asset:

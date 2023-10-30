@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'share_assets',
     'contact',
     'feedback',
-       
+
 ]
 
 

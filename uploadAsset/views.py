@@ -2,16 +2,20 @@ from rest_framework import generics,status, viewsets, views, filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import uploadAsset,AssetVersion
-from .serializers import uploadAssetSerializer,PreviousVersionSerializer,CurrentAssetSerializer,AssetVersionSerializer, updateUploadSerializer
+from .serializers import *
 from account.renders import UserRenderer
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q
 from organization.models import Organization, addMember
 from library.models import Library
+from django.http import HttpResponse
+from wsgiref.util import FileWrapper
+from rest_framework.parsers import FileUploadParser
 
 ######### upload Multiple Asset ###########
 class AssetListsCreateView(views.APIView):
     parser_classes = (MultiPartParser, FormParser)
+    # parser_classes = [FileUploadParser]
     permission_classes = [IsAuthenticated]
     renderer_classes = [UserRenderer]
 
@@ -92,6 +96,26 @@ class AssetListCreateView(generics.ListCreateAPIView):
                 return queryset
         # return Response({'message':"This library not valid this user"}, status=status.HTTP_400_BAD_REQUEST)
         
+######### Download Asset #######
+class FileDownloadAPIView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, id, format=None):
+        queryset = uploadAsset.objects.get(id = id)
+        file_handle = queryset.file.path
+        document = open(file_handle, 'rb')
+        response = HttpResponse(FileWrapper(document), content_type='application/msword')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % queryset.file.name
+        return response
+    
+class AssetViewSet(viewsets.ModelViewSet):
+    queryset = uploadAsset.objects.all()
+    serializer_class = AssetSerializer
+
+    def retrieve(self, request, pk=None):
+        asset = uploadAsset.objects.get(pk=pk)
+        serializer = self.get_serializer(asset)
+        return Response(serializer.data)   
+   
      
 class AssetRetrieveView(generics.RetrieveAPIView):
     queryset = uploadAsset.objects.all()
@@ -104,7 +128,8 @@ class AssetUpdateView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     
     def perform_update(self, serializer):
-        pk = self.kwargs.get('pk')     
+        pk = self.kwargs.get('pk')  
+           
         try:   
             up_asset = uploadAsset.objects.get(id = pk)
             org_ow = addMember.objects.filter(organization=up_asset.organization)
@@ -114,8 +139,9 @@ class AssetUpdateView(generics.UpdateAPIView):
                         serializer.save()
                         return Response({'message':'Update Successfully'})
                     else:
-                        return Response({'message':"You don't have permission to Delete."})
+                        return Response({'message':"You don't have permission to Update."})
             serializer.save()
+            print("ADAKLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL", pk)
             return Response({'message':'Update Successfully'})
         except uploadAsset.DoesNotExist:
             return Response({
@@ -186,4 +212,71 @@ class CurrentAssetView(generics.RetrieveAPIView):
 class AssetVersionListView(generics.ListAPIView):
     queryset = AssetVersion.objects.all()
     serializer_class = AssetVersionSerializer
+
+#### Image Filter API View ####
+class ImageFilter(views.APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, pk):
+        asset = uploadAsset.objects.filter(organization_id=pk)
+        lst = []
+        for i in asset:
+            st = str(i.asset)
+            txt = st.split('.')
+            if txt[1] != 'mp3' and txt[1] != 'mp4':
+                dic = {}
+                dic['id'] = i.id
+                dic['organization'] = i.organization_id
+                dic['title'] = i.title
+                dic['library'] = i.library_id    
+                dic['description'] = i.description
+                dic['asset'] = i.asset.url
+                dic['location'] = i.location
+                lst.append(dic)     
+        return Response(lst)
+     
+#### Audio Filter API View ####
+class AudioFilter(views.APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, pk):
+        asset = uploadAsset.objects.filter(organization_id=pk)
+        lst = []
+        for i in asset:
+            st = str(i.asset)
+            txt = st.split('.')
+            if txt[1] == 'mp3':
+                dic = {}
+                dic['id'] = i.id
+                dic['organization'] = i.organization_id
+                dic['title'] = i.title
+                dic['library'] = i.library_id    
+                dic['description'] = i.description
+                dic['asset'] = i.asset.url
+                dic['location'] = i.location
+                lst.append(dic)      
+        return Response(lst)
+    
+#### Video Filter API View ####
+class VideoFilter(views.APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, pk):
+        asset = uploadAsset.objects.filter(organization_id=pk)
+        lst = []
+        for i in asset:
+            st = str(i.asset)
+            txt = st.split('.')
+            if txt[1] == 'mp4':
+                dic = {}
+                dic['id'] = i.id
+                dic['organization'] = i.organization_id
+                dic['title'] = i.title
+                dic['library'] = i.library_id    
+                dic['description'] = i.description
+                dic['asset'] = i.asset.url
+                dic['location'] = i.location
+                lst.append(dic)     
+        return Response(lst)
+    
     

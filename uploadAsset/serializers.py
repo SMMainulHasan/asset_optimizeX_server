@@ -20,7 +20,17 @@ class uploadAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = uploadAsset
         fields = ['id', 'organization', 'title', 'library', 'description', 'asset', 'location']
-          
+
+#### Download Asset Serializers ###
+class AssetSerializer(serializers.ModelSerializer):
+    download_url = serializers.SerializerMethodField()
+
+    def get_download_url(self, obj):
+        return obj.get_download_url()
+
+    class Meta:
+        model = uploadAsset
+        fields = ['id', 'title', 'download_url']
 
 class PreviousVersionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,4 +46,13 @@ class CurrentAssetSerializer(serializers.ModelSerializer):
 class AssetVersionSerializer(serializers.ModelSerializer):
     class Meta:
         model = AssetVersion
-        fields = ('id', 'title', 'asset', 'created_at')         
+        fields = ('id', 'title', 'asset', 'created_at')   
+        
+        
+
+# class FileSerializer(serializers.ModelSerializer):
+#     file = FileTypeField(allowed_types=['video/mp4', 'audio/mpeg', 'image/png'])
+
+#     class Meta:
+#         model = uploadAsset
+#         fields = ['asset']              

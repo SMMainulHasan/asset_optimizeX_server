@@ -293,7 +293,7 @@ class MemberRemoveView(generics.DestroyAPIView):
             member_id = addMember.objects.get(pk = pk)
             try:
               member = addMember.objects.get(organization__member = self.request.user)
-              if member.role == 'Contributor' or member.role == 'Viewer':
+              if member.role == 'Contributor' or member.role == 'Consumer':
                 return response.Response({'message':"You don't have permission to remove member."})
               member_id.delete()
               return response.Response({"message":"Member Remove Successfully"})
@@ -321,6 +321,7 @@ class addMemberView(views.APIView):
     
     
     org_m = addMember.objects.filter(organization__organization_name = organization_name)
+    
     for i in org_m:
       if i.user == request.user:
         if i.role == 'Contributor' or i.role == 'Consumer':
@@ -332,6 +333,8 @@ class addMemberView(views.APIView):
         return response.Response("Not Valid Email")
       try:
         organization = Organization.objects.get(organization_name=organization_name)
+        if len(org_m) >= 3 and organization.premiumUser == False:
+          return response.Response({"msg":"Your Organization has exceeded the number of members limit and you must purchase Premium to add additional members."}) 
         if organization.owner == user:
           return response.Response({
             "msg":"Not Valid Email"
@@ -392,6 +395,9 @@ class InvitedCodeaddMemberView(views.APIView):
          
         if org.owner == user:
           return response.Response({'message':'You are Owner This organization.'})
+        if len(org.member.all()) >= 3 and org.premiumUser == False:
+          return response.Response({'message':'The number of members in this organization has exceeded the limit. You cannot join this organization'})
+        
         for i in org.member.all():
           if i.email == user.email:
             return response.Response({'message': "Already You added This Organization Member."})
@@ -413,9 +419,35 @@ class InvitedCodeaddMemberView(views.APIView):
 class MemberPermissionUpdateView(generics.UpdateAPIView):
   permission_classes = [permissions.IsAuthenticated]
   serializer_class = MemberPermissionUpdateSerializer
-  queryset = Organization.objects.all()
+  queryset = addMember.objects.all()
+     
+  def perform_update(self, serializer):
+        pk = self.kwargs.get('pk')    
+        print(pk)
+        try:   
+            member_id = addMember.objects.get(pk = pk)
+            try:
+              member = addMember.objects.get(organization__member = self.request.user)
+              if member.role == 'Contributor' or member.role == 'Consumer':
+                return response.Response({'message':"You don't have permission to Edit member."})
+              serializer.save()
+              return response.Response({"message":"Member  Update Successfully"})
+            except: 
+              serializer.save()
+              return response.Response({'message':'Update Successfully'})
+        except addMember.DoesNotExist:
+            return response.Response({
+                'message':'Not valid asset'
+            })
+ 
+ 
+class MemberPermissionUpdateview(views.APIView):
+  permission_classes = [permissions.IsAuthenticated]
+  def get(self, request, pk):
+    member = addMember.objects.get(pk = pk)
+    lst = {}
+    lst['role'] = member.role
+    lst['email'] = member.email
+    lst['is_company'] = member.is_company
+    return response.Response(lst, status=status.HTTP_200_OK)
   
-  # def perform_update(self, serializer):
-  
-  
-        

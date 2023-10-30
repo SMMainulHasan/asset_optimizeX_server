@@ -1,5 +1,6 @@
 from django.db import models
 from account.models import User
+from organization.models import Organization
 # Create your models here.
 
 class Feedbackmodel(models.Model):
@@ -10,10 +11,12 @@ class Feedbackmodel(models.Model):
     ('4','4'),
     ('5','5'),
   )
-  user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+  user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+  organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)
   message = models.TextField(max_length=500)
   rating = models.CharField(max_length=50, choices=RATING)
+  org_position = models.CharField(max_length=200, null=True)
+  feedback_approve = models.BooleanField(default=False, null=True)
   
-  def __str__(self):
-      return self.user.name
+ 
   

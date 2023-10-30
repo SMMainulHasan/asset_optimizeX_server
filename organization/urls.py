@@ -27,7 +27,7 @@ urlpatterns = [
   ### org Delete ###
   path('delete/<int:pk>/', organizationDeleteView.as_view()),
   
-  ### Org Detaail ###
+  ### Org Detail ###
   path('detail/<int:pk>/', organizationDetailView.as_view()),
   
   ### Payment History ###
@@ -35,5 +35,10 @@ urlpatterns = [
   
   ### Invited code member Add ###
   path('code/', InvitedCodeaddMemberView.as_view()),
+  
+  ### Member Permission Edit ###
+  path('permission-edit/<int:pk>/', MemberPermissionUpdateView.as_view()),
+  
+  path('edit/<int:pk>/', MemberPermissionUpdateview.as_view()),
   
 ]

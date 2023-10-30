@@ -89,5 +89,5 @@ class organizationUpdateSerializer(serializers.ModelSerializer):
 class MemberPermissionUpdateSerializer(serializers.ModelSerializer):
   class Meta:
     model = addMember
-    fields = '__all__'
+    fields = ['role']
 

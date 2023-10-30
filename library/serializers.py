@@ -25,7 +25,9 @@ class CreateLibrarySerializer(serializers.ModelSerializer):
         try:
             org = Organization.objects.get(organization_name=organization) 
             dup = Library.objects.filter(organization=org)   
-            
+            if len(dup) >= 2 and org.premiumUser == False:
+                raise serializers.ValidationError("Your Organization has exceeded the number of Library limit and you must purchase Premium to add additional Library.")
+                   
             for i in dup:
                 if i.library_name == library_name:
                     raise serializers.ValidationError("This library name already create")
