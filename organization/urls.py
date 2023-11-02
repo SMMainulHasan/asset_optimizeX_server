@@ -21,6 +21,7 @@ urlpatterns = [
   ########### Payment  #########
   path('payment/<int:pk>/', PlaceOrderPremiumView.as_view()),
   path('success/', successView.as_view()),
+  path('failed/', PaymentFailView.as_view()),
   
   ### org update  ###
   path('update/<int:pk>/', organizationUpdateView.as_view()),

@@ -14,7 +14,6 @@ class Feedbackmodel(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
   organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)
   message = models.TextField(max_length=500)
-  rating = models.CharField(max_length=50, choices=RATING)
   org_position = models.CharField(max_length=200, null=True)
   feedback_approve = models.BooleanField(default=False, null=True)
   

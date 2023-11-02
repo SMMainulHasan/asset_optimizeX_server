@@ -1,13 +1,14 @@
 from rest_framework.generics import (CreateAPIView, ListAPIView,
                                      RetrieveUpdateDestroyAPIView, UpdateAPIView, DestroyAPIView)
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import response, views, status
+from rest_framework import response, views, status, filters, generics
 from account.models import User
 from organization.models import *
 from account.renders import UserRenderer
 from .models import Library
 from .serializers import CreateLibrarySerializer
 from uploadAsset.models import uploadAsset
+from uploadAsset.serializers import uploadAssetSerializer
 
 class CreateLibraryAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -96,49 +97,78 @@ class ListLibraryAPIView(views.APIView):
 
 
 ######## Organization All Asset Showing  ############
-class assetAllImageView(views.APIView):
+# class assetAllImageView(views.APIView):
+#     permission_classes = [IsAuthenticated]
+#     renderer_classes = [UserRenderer]
+    
+#     def get(self, request, org_id): 
+#         query = request.GET.get('keyword')
+#         org_owner = Organization.objects.filter(owner=request.user)
+#         org_member = Organization.objects.filter(member=request.user)
+#         temp = [] 
+#         print("Query", query)
+       
+#         if org_owner.exists():
+#             print(org_owner)
+#             for i in org_owner:
+#                 if i.id == org_id:
+#                     lib = Library.objects.filter(organization__id = org_id)      
+#                     for k in lib:
+#                         asset = uploadAsset.objects.filter(library = k.id)          
+#                         for j in asset:
+#                             tem = {}
+#                             tem['id'] = j.id
+#                             tem['title'] = j.title
+#                             tem['description'] = j.description
+#                             tem['asset'] = j.asset.url
+#                             temp.append(tem)
+        
+#         if  org_member.exists():   
+       
+#             for i in org_member:
+#                 if i.id == org_id:
+#                     lib = Library.objects.filter(organization__id = org_id)    
+#                     for k in lib:
+#                         asset = uploadAsset.objects.filter(library = k.id)          
+#                         for j in asset:
+#                             tem = {}
+#                             tem['id'] = j.id
+#                             tem['title'] = j.title
+#                             tem['description'] = j.description
+#                             tem['asset'] = j.asset.url
+#                             temp.append(tem)
+        
+#         total_img = {}  
+#         total_img['total_img'] = len(temp)
+#         lstt = []
+#         lstt.append(total_img)
+#         print(temp)           
+#         print(temp)
+#         return response.Response({'len':lstt, 
+#                                   'asset': temp}, status=status.HTTP_200_OK)
+        
+#### Organization Search ##############
+class assetAllImageView(generics.ListCreateAPIView):
+    queryset = Organization.objects.all()
     permission_classes = [IsAuthenticated]
-    renderer_classes = [UserRenderer]
-    def get(self, request, org_id): 
-        org_owner = Organization.objects.filter(owner=request.user)
-        org_member = Organization.objects.filter(member=request.user)
-        temp = [] 
-       
-        if org_owner.exists():
-            print(org_owner)
-            for i in org_owner:
-                if i.id == org_id:
-                    lib = Library.objects.filter(organization__id = org_id)      
-                    for k in lib:
-                        asset = uploadAsset.objects.filter(library = k.id)          
-                        for j in asset:
-                            tem = {}
-                            tem['id'] = j.id
-                            tem['title'] = j.title
-                            tem['asset'] = j.asset.url
-                            temp.append(tem)
-        
-        if  org_member.exists():   
-       
-            for i in org_member:
-                if i.id == org_id:
-                    lib = Library.objects.filter(organization__id = org_id)    
-                    for k in lib:
-                        asset = uploadAsset.objects.filter(library = k.id)          
-                        for j in asset:
-                            tem = {}
-                            tem['id'] = j.id
-                            tem['title'] = j.title
-                            tem['asset'] = j.asset.url
-                            temp.append(tem)
-        
-        total_img = {}  
-        total_img['total_img'] = len(temp)
-        lstt = []
-        lstt.append(total_img)
-        print(temp)           
-        print(temp)
-        return response.Response({'len':lstt, 
-                                  'asset': temp}, status=status.HTTP_200_OK)
-        
+    serializer_class = uploadAssetSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'description']
+    
+    def get_queryset(self):
+        org_id = (self.kwargs.get('org_id'))
+  
+        if org_id is None:
+            return response.Response({'message':'Organization Id is Required'})
+        user = self.request.user
+        org_owner = Organization.objects.filter(owner=user)
+        for i in org_owner:
+            if i.id == org_id:
+                queryset = uploadAsset.objects.filter(organization_id = org_id)   
+                return queryset
+        org_member = Organization.objects.filter(owner=user)
+        for i in org_member:
+            if i.id == org_id:
+                queryset = uploadAsset.objects.filter(organization_id = org_id)
+                return queryset        
         

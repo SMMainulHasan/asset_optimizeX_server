@@ -12,7 +12,7 @@ class Organization(models.Model):
   slug = models.SlugField(max_length=200, null=True, blank=True)
   description = models.TextField(max_length=1000)
   created_date = models.DateTimeField(auto_now_add=True)
-  organization_logo = models.ImageField(upload_to = 'images/company-logo/', null=True, blank=True, default='org_logo/org-logo.png' )
+  organization_logo = models.ImageField(upload_to = 'images/company-logo/', null=True, blank=True,default='org_logo/org-logo.png'  )
   tc = models.BooleanField()
   is_company = models.BooleanField(default=False)
   country = models.CharField(max_length=100)

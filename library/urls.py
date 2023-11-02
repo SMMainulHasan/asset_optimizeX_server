@@ -10,5 +10,7 @@ urlpatterns = [
     
     path('list/<int:org_id>/', ListLibraryAPIView.as_view(), name='list-library-by-org'),
     ####### All Asset showing Organization ##########
-    path('asset/<int:org_id>/', assetAllImageView.as_view(), name = 'org_asset_all')
+    path('asset/<int:org_id>/', assetAllImageView.as_view(), name = 'org_asset_all'),
+    
+    # path('show/<int:pk>/', assetAlleImageView.as_view()),
 ]
